@@ -82,7 +82,7 @@ install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
 find_package(Git)
 
 IF (GIT_FOUND)
-    execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always
+    execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always --abbrev=7
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                   OUTPUT_VARIABLE GIT_DESCRIBE_STRING
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
