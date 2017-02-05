@@ -31,8 +31,8 @@
 namespace fs = std::experimental::filesystem;
 
 fs::path mockGameInstall() {
-  auto dataPath = fs::temp_directory_path() / "Data";
-  fs::create_directory(dataPath);
+  auto dataPath = fs::temp_directory_path() / "Oblivion" / "Data";
+  fs::create_directories(dataPath);
 
   std::ofstream dummyMaster(dataPath / "Oblivion.esm");
   dummyMaster.close();
