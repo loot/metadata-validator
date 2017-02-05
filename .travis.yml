@@ -1,0 +1,62 @@
+sudo: false
+language: cpp
+compiler: gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test # ppa:ubuntu-toolchain-r/test
+    packages:
+      - g++-5
+      - libstdc++-5-dev
+
+install:
+  # Use GCC 5.
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  # Get CMake (version available in repositories is too old, needs to be 3.1+)
+  - wget --no-check-certificate https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz
+  - tar -xzf cmake-3.7.2-Linux-x86_64.tar.gz
+  - export PATH=$PWD/cmake-3.7.2-Linux-x86_64/bin:$PATH
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make all
+
+after_success:
+  - cd $TRAVIS_BUILD_DIR/build
+  - cpack
+  - cd ..
+  - GIT_DESCRIBE=$(git describe --tags --long --always --abbrev=7)
+  # Make a copy of the metadata validator archive for GitHub deployment to find.
+  - cp $(ls build/package/metadata-validator-*.tar.xz) build/metadata-validator.tar.xz
+  # Need to replace the Bintray config file version placeholder.
+  - sed -i "s/REPLACE_THIS_VERSION/${GIT_DESCRIBE}_${TRAVIS_BRANCH}/" scripts/travis/metadata-validator.bintray.json
+
+deploy:
+  - provider: bintray
+    file: scripts/travis/metadata-validator.bintray.json
+    user: wrinklyninja
+    key:
+      secure: "HHBvCW8i08UNxZXoN3asVsyKrF0YRdZ0xRjbUKzMXkIgEwNfR3k61kyAOR75hyqB4rOftiB7o0RO/Uq7wt9qUMuR3bjKa4YT8AhXWdEc2avWAeLKEofaijpYxfp20OCswv291dC595rKJhyF5IqUfUU4jijipdKVSun4VAqQdtWC4mOOvC7IItMI5qcVljm7StYD11LHM44ILeag/qkBgxaCosycDryrV+hNu8WWjJ6eTptGoZYuY507rLM0YGVOCZq8oY0gb/T1bXdn8FK5ZB0BfjF5fn83563rXQO8BG3jPEB4og9VhSI5S4GzODUgQKLTn65+eokrXN5E9oAe7MQ++95/D0SuHFuP9NzARWVz+leYtaj5+yWrFGeERQcvyu6Qkx67PLYSSIQJnluwBrhvJOjnZw3sAKwfpCppWVL5uuQq80YAJJztjfSzSgyIzy9zjs2UCdZuI9GPiNX7dWRqexlTrfqVscTKwX5tXh6b9nkn0ygMh+vOEC5WMBH1jjwNUus/75fyTiuWIZPazI9gP1HDJWO3pGgJD8zL3SBAaBJ3NjvOOx01PQ4ifTh2dMuYvp2rkNbTxk88BbPJoM7/nhvyldz4tcMgVnY3c33dEMw1mqqkTzQVKQtAVB4D6slf+43v1k/xxGmHeCKwDvhjTrn3473DlDk9ExHQgg4="
+    skip_cleanup: true
+    on:
+      all_branches: true
+  - provider: releases
+    api_key:
+      secure: "mffXGMl3grspQtxaWnsryYTInjol9+wk4wRRbu3IgylJFLuzt9sXW5kgfgO0sFHLlk1NhlEr3JGUCJWodJZIYFTlbRAopFpxg235wDBfDD1h2ebnFeFYNCOn6kROHtasbHsiEGZS50Iui55ZziTydc5KzbSP/A79KwAGmfQSt6sr+EHXhiCqzeoHdFVF1E9a6dSgQuZylNWZ6eJrB129yrBZzvg7lDajSqe/pKGPfW6/h/ihK6rfxzaAKRt3ewOS20egTXYY6kccYi2bUvChJ5/7bbSoVuy1p13DvNvfB0qDonh4MNo/Ag7pbEkepi6jA0+xf8d5qGdA2qpbwf+lS0cGFtvY6/BUfb1pd28SVXQ2/XUHwj75s8LI/KowgXuFwYWPJ9k6DMFosNcyGCC3VA8cNmZgA3wuiU/g8I1wcjv4Rab9uFizxaCzEdIrK1fHBnxT4R7EIeEG17EaS30b+O2G6A+WPWZX/1UuGcWSwetScSGTuXZ4DPo/Ekql9e/nMrlrIlUgdBDSWlgO3KzouwbuFTgt/y+Zu4zIyeOnqVSUXHFpj6oi9sr8nvCbERbt/6eUnaTnHlNTwkfIVJqrLS7lMN55s1tIE1CHZPA1E8f+sv4I+GY8/MF10FzkQPrWyxV3oGUaSZMHTykPSWn8VWYKGEjXyxJA+CSwIO6+NzY="
+    file: build/metadata-validator.tar.xz
+    skip_cleanup: true
+    on:
+      repo: loot/metadata-validator
+      tags: true
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#loot"
+    use_notice: true
+    skip_join: true
