@@ -28,6 +28,7 @@
 #include <experimental/filesystem>
 
 #include "loot/api.h"
+#include "version.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -42,6 +43,8 @@ fs::path mockGameInstall() {
 }
 
 int main(int argc, char **argv) {
+  using loot::LootVersion;
+  using loot::validator::Version;
   using std::cout;
   using std::endl;
 
@@ -59,8 +62,8 @@ int main(int argc, char **argv) {
   // Print version info if -v or --version are given.
   if ((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "--version") == 0)) {
     cout << endl << "LOOT Metadata Validator" << endl
-      << "Using LOOT API v" << loot::LootVersion::major << "." << loot::LootVersion::minor
-      << "." << loot::LootVersion::patch << ", build revision " << loot::LootVersion::revision
+      << "v" << Version::string() << ", build revision " << Version::revision << endl
+      << "Using LOOT API v" << LootVersion::string() << ", build revision " << LootVersion::revision
       << endl << endl;
     return 0;
   }

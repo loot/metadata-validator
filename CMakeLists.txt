@@ -4,6 +4,27 @@ project (metadata-validator)
 include(ExternalProject)
 
 ##############################
+# Get Build Revision
+##############################
+
+find_package(Git)
+
+if (GIT_FOUND)
+    execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                  OUTPUT_VARIABLE GIT_COMMIT_STRING
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+    SET (GIT_COMMIT_STRING "unknown")
+endif()
+
+message(STATUS "Git revision: ${GIT_COMMIT_STRING}")
+
+# Write to file.
+configure_file("${CMAKE_SOURCE_DIR}/src/version.cpp.in" "${CMAKE_BINARY_DIR}/generated/version.cpp" @ONLY)
+include_directories("${CMAKE_BINARY_DIR}/generated")
+
+##############################
 # LOOT API
 ##############################
 
@@ -32,7 +53,13 @@ set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARE
 # General Settings
 ##############################
 
-set(VALIDATOR_SOURCE "${CMAKE_SOURCE_DIR}/src/main.cpp")
+set(VALIDATOR_HEADERS "${CMAKE_SOURCE_DIR}/src/version.h")
+
+set(VALIDATOR_SOURCE  "${CMAKE_BINARY_DIR}/generated/version.cpp"
+                      "${CMAKE_SOURCE_DIR}/src/main.cpp"
+                      "${CMAKE_SOURCE_DIR}/src/resource.rc")
+
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 ##############################
 # System-Specific Settings
@@ -54,7 +81,7 @@ endif()
 ##############################
 
 # Build validator.
-add_executable       (metadata_validator ${VALIDATOR_SOURCE})
+add_executable       (metadata_validator ${VALIDATOR_SOURCE} ${VALIDATOR_HEADERS})
 add_dependencies     (metadata_validator loot_api)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -77,9 +104,6 @@ install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
 ########################################
 # CPack
 ########################################
-
-# Get version info using Git if available
-find_package(Git)
 
 IF (GIT_FOUND)
     execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always --abbrev=7
