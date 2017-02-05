@@ -7,9 +7,15 @@ include(ExternalProject)
 # LOOT API
 ##############################
 
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    set(LOOT_API_URL "https://github.com/loot/loot/releases/download/0.10.3/loot-api_0.10.3-0-g0fcf788_dev_Win32.7z")
+else()
+    set(LOOT_API_URL "https://github.com/loot/loot/releases/download/0.10.3/loot-api_0.10.3-0-g0fcf788_0.10.3.tar.xz")
+endif()
+
 ExternalProject_Add(loot_api
                     PREFIX "external"
-                    URL "https://github.com/loot/loot/releases/download/0.10.3/loot-api_0.10.3-0-g0fcf788_dev_Win32.7z"
+                    URL ${LOOT_API_URL}
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
@@ -62,13 +68,11 @@ endif()
 ########################################
 
 install(TARGETS metadata_validator
-        DESTINATION "."
-        CONFIGURATIONS Release)
+        DESTINATION ".")
 
 install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
         "${CMAKE_SOURCE_DIR}/README.md"
-        DESTINATION "."
-        CONFIGURATIONS Release)
+        DESTINATION ".")
 
 ########################################
 # CPack
