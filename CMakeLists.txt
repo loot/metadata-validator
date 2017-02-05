@@ -3,8 +3,6 @@ cmake_policy(SET CMP0015 NEW)
 project (metadata-validator)
 include(ExternalProject)
 
-option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" OFF)
-
 ##############################
 # LOOT API
 ##############################
@@ -43,23 +41,6 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -std=c++14")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++14")
-endif()
-
-if (MSVC)
-    # Set /bigobj to allow building Debug tests
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /bigobj")
-
-    # Update compiler flags.
-    if (MSVC_STATIC_RUNTIME)
-        foreach(flag
-            CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_RELWITHDEBINFO
-            CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_DEBUG_INIT
-            CMAKE_CXX_FLAGS_RELEASE  CMAKE_CXX_FLAGS_RELWITHDEBINFO
-            CMAKE_CXX_FLAGS_DEBUG  CMAKE_CXX_FLAGS_DEBUG_INIT)
-            STRING(REPLACE "/MD"  "/MT" "${flag}" "${${flag}}")
-            SET("${flag}" "${${flag}} /EHsc")
-        endforeach()
-    endif()
 endif()
 
 ##############################
