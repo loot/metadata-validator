@@ -10,7 +10,7 @@ thrown.
 
 ## Downloads
 
-Releases are hosted on [GitHub](https://github.com/loot/metadata-validator/releases), and snapshot builds are available on [Bintray](https://bintray.com/wrinklyninja/loot/metadata-validator). The snapshot build archives are named like so:
+Releases are hosted on [GitHub](https://github.com/loot/metadata-validator/releases), and snapshot builds are available on [Bintray](https://bintray.com/loot/snapshots/metadata-validator). The snapshot build archives are named like so:
 
 ```
 metadata-validator-<last tag>-<revisions since tag>-g<short revision ID>_<branch>-<platform>.7z
