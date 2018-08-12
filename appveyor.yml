@@ -11,7 +11,7 @@ environment:
     secure: PgsEA6TjHVf718zMnK7J/fT1hUAVNKBeWhpYgYaeCyeZk37VT4Ics6j7+B7ElLEr
 
 install:
-  - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/WrinklyNinja/ci-scripts/1.2.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
+  - ps: (New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/WrinklyNinja/ci-scripts/2.0.0/delete_old_bintray_versions.py', "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py")
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
@@ -62,5 +62,5 @@ deploy:
 on_success:
   - ps: |
       if ($env:bintray_auth_token) {
-        python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -o loot -g loot -u loot -b snapshots -p metadata-validator -t $env:bintray_auth_token -a $env:github_auth_token -n 30
+        python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -g loot/loot -b loot/snapshots/metadata-validator -u wrinklyninja -k $env:bintray_auth_token -t $env:github_auth_token -n 30
       }
