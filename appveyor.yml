@@ -62,5 +62,5 @@ deploy:
 on_success:
   - ps: |
       if ($env:bintray_auth_token) {
-        python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -g loot/loot -b loot/snapshots/metadata-validator -u wrinklyninja -k $env:bintray_auth_token -t $env:github_auth_token -n 30
+        python "$env:APPVEYOR_BUILD_FOLDER\delete_old_bintray_versions.py" -g loot/metadata-validator -b loot/snapshots/metadata-validator -u wrinklyninja -k $env:bintray_auth_token -t $env:github_auth_token -n 30
       }
