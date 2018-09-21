@@ -29,4 +29,4 @@ Linux respectively.
 
 Note that there is a dependency on the experimental standard filesystem library,
 which may complicate compiler support. This dependency will be replaced by the
-non-experimental library after MSVC 2017 is released.
+non-experimental library after LOOT API builds using C++17 are available.
