@@ -74,8 +74,9 @@ int main(int argc, char **argv) {
     cout << endl << "Validating metadata file: " << argv[1] << endl << endl;
 
     // Create a handle for any game at any path, it doesn't matter.
-    auto handle = loot::CreateDatabase(loot::GameType::tes4, gamePath.string(), gamePath.string());
-    handle->LoadLists(argv[1]);
+    loot::InitialiseLocale();
+    auto handle = loot::CreateGameHandle(loot::GameType::tes4, gamePath.string(), gamePath.string());
+    handle->GetDatabase()->LoadLists(argv[1]);
   } catch (std::exception& e) {
     cout << "ERROR: " << e.what() << endl << endl;
 

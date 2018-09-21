@@ -8,6 +8,8 @@ addons:
       - ubuntu-toolchain-r-test # ppa:ubuntu-toolchain-r/test
     packages:
       - g++-5
+      - libhttp-parser-dev
+      - libssh2-1-dev
       - libstdc++-5-dev
 
 install:

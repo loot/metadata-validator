@@ -3,6 +3,9 @@ cmake_policy(SET CMP0015 NEW)
 project (metadata-validator)
 include(ExternalProject)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 ##############################
 # Get Build Revision
 ##############################
@@ -29,9 +32,9 @@ include_directories("${CMAKE_BINARY_DIR}/generated")
 ##############################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LOOT_API_URL "https://github.com/loot/loot/releases/download/0.10.3/loot-api_0.10.3-0-g0fcf788_dev_Win32.7z")
+    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.7/loot_api-0.13.7-0-g3a747b8_dev-win32.7z")
 else()
-    set(LOOT_API_URL "https://github.com/loot/loot/releases/download/0.10.3/loot-api_0.10.3-0-g0fcf788_0.10.3.tar.xz")
+    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.7/loot-api.tar.xz")
 endif()
 
 ExternalProject_Add(loot_api
@@ -66,14 +69,12 @@ include_directories("${CMAKE_SOURCE_DIR}/src")
 ##############################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    add_definitions (-DUNICODE -D_UNICODE -DLIBLO_STATIC)
+    add_definitions (-DUNICODE -D_UNICODE)
 endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};.")
     set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -std=c++14")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++14")
 endif()
 
 ##############################
@@ -87,8 +88,14 @@ add_dependencies     (metadata_validator loot_api)
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(metadata_validator PRIVATE ${LOOT_API_STATIC_LIBRARY})
 else()
-    target_link_libraries(metadata_validator PRIVATE ${LOOT_API_SHARED_LIBRARY} "stdc++fs")
+    target_link_libraries(metadata_validator PRIVATE ${LOOT_API_SHARED_LIBRARY} pthread http_parser ssh2 stdc++fs)
 endif()
+
+# Copy the API binary to the build directory.
+add_custom_command(TARGET metadata_validator POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
+        "$<TARGET_FILE_DIR:metadata_validator>/${LOOT_API_SHARED_LIBRARY}")
 
 ########################################
 # Install
