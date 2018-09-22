@@ -75,7 +75,7 @@ endif()
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_RPATH};.")
     set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
-    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
 ##############################
