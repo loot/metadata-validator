@@ -1,7 +1,7 @@
 LOOT Metadata Validator
 =======================
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/loot/metadata-validator?branch=master&svg=true)](https://ci.appveyor.com/project/WrinklyNinja/metadata-validator)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/loot/metadata-validator?branch=master&svg=true)](https://ci.appveyor.com/project/LOOT/metadata-validator)
 [![Travis Build Status](https://travis-ci.org/loot/metadata-validator.svg?branch=master)](https://travis-ci.org/loot/metadata-validator)
 
 This is a very simple validator for LOOT metadata files that tries to load a
