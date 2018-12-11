@@ -5,7 +5,7 @@ LOOT Metadata Validator
 [![Travis Build Status](https://travis-ci.org/loot/metadata-validator.svg?branch=master)](https://travis-ci.org/loot/metadata-validator)
 
 This is a very simple validator for LOOT metadata files that tries to load a
-given metadata file using the LOOT API, and prints the message for any exception
+given metadata file using libloot, and prints the message for any exception
 thrown.
 
 ## Downloads
@@ -26,7 +26,3 @@ metadata-validator ./masterlist.yaml
 
 Refer to `appveyor.yml` and `.travis.yml` for the build processes on Windows and
 Linux respectively.
-
-Note that there is a dependency on the experimental standard filesystem library,
-which may complicate compiler support. This dependency will be replaced by the
-non-experimental library after LOOT API builds using C++17 are available.
