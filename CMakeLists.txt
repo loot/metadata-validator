@@ -3,7 +3,8 @@ cmake_policy(SET CMP0015 NEW)
 project (metadata-validator)
 include(ExternalProject)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ##############################
@@ -32,25 +33,25 @@ include_directories("${CMAKE_BINARY_DIR}/generated")
 ##############################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.7/loot_api-0.13.7-0-g3a747b8_dev-win32.7z")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win32.7z")
 else()
-    set(LOOT_API_URL "https://github.com/loot/loot-api/releases/download/0.13.7/loot-api.tar.xz")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot.tar.xz")
 endif()
 
-ExternalProject_Add(loot_api
+ExternalProject_Add(libloot
                     PREFIX "external"
-                    URL ${LOOT_API_URL}
+                    URL ${LIBLOOT_URL}
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")
-ExternalProject_Get_Property(loot_api SOURCE_DIR)
-set(LOOT_API_EXTRACTED_PATH ${SOURCE_DIR})
+ExternalProject_Get_Property(libloot SOURCE_DIR)
+set(LIBLOOT_EXTRACTED_PATH ${SOURCE_DIR})
 
-include_directories("${LOOT_API_EXTRACTED_PATH}/include")
-link_directories(${LOOT_API_EXTRACTED_PATH})
+include_directories("${LIBLOOT_EXTRACTED_PATH}/include")
+link_directories(${LIBLOOT_EXTRACTED_PATH})
 
-set(LOOT_API_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot_api${CMAKE_STATIC_LIBRARY_SUFFIX}")
-set(LOOT_API_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot_api${CMAKE_SHARED_LIBRARY_SUFFIX}")
+set(LIBLOOT_STATIC_LIBRARY "${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set(LIBLOOT_SHARED_LIBRARY "${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 ##############################
 # General Settings
@@ -83,19 +84,19 @@ endif()
 
 # Build validator.
 add_executable       (metadata_validator ${VALIDATOR_SOURCE} ${VALIDATOR_HEADERS})
-add_dependencies     (metadata_validator loot_api)
+add_dependencies     (metadata_validator libloot)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    target_link_libraries(metadata_validator PRIVATE ${LOOT_API_STATIC_LIBRARY})
+    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
-    target_link_libraries(metadata_validator PRIVATE ${LOOT_API_SHARED_LIBRARY} pthread http_parser ssh2 stdc++fs)
+    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_SHARED_LIBRARY} pthread http_parser ssh2 stdc++fs)
 endif()
 
 # Copy the API binary to the build directory.
 add_custom_command(TARGET metadata_validator POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
-        "$<TARGET_FILE_DIR:metadata_validator>/${LOOT_API_SHARED_LIBRARY}")
+        "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
+        "$<TARGET_FILE_DIR:metadata_validator>/${LIBLOOT_SHARED_LIBRARY}")
 
 ########################################
 # Install
@@ -104,7 +105,7 @@ add_custom_command(TARGET metadata_validator POST_BUILD
 install(TARGETS metadata_validator
         DESTINATION ".")
 
-install(FILES "${LOOT_API_EXTRACTED_PATH}/${LOOT_API_SHARED_LIBRARY}"
+install(FILES "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
         "${CMAKE_SOURCE_DIR}/README.md"
         DESTINATION ".")
 

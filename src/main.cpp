@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
   if ((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "--version") == 0)) {
     cout << endl << "LOOT Metadata Validator" << endl
       << "v" << Version::string() << ", build revision " << Version::revision << endl
-      << "Using LOOT API v" << LootVersion::string() << ", build revision " << LootVersion::revision
+      << "Using LOOT API v" << LootVersion::GetVersionString() << ", build revision " << LootVersion::revision
       << endl << endl;
     return 0;
   }
