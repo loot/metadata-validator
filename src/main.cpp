@@ -30,7 +30,7 @@
 #include "loot/api.h"
 #include "version.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 fs::path mockGameInstall() {
   auto dataPath = fs::temp_directory_path() / "Oblivion" / "Data";
