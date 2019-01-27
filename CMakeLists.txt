@@ -33,9 +33,9 @@ include_directories("${CMAKE_BINARY_DIR}/generated")
 ##############################
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot-0.14.0-0-g2e074a4_dev-win32.7z")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.3/libloot-0.14.3-0-g56d8f78_dev-win32.7z")
 else()
-    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.0/libloot.tar.xz")
+    set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.14.3/libloot.tar.xz")
 endif()
 
 ExternalProject_Add(libloot
