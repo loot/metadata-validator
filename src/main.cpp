@@ -25,7 +25,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-#include <experimental/filesystem>
+#include <filesystem>
 
 #include "loot/api.h"
 #include "version.h"
