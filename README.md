@@ -1,7 +1,7 @@
 LOOT Metadata Validator
 =======================
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/loot/metadata-validator?branch=master&svg=true)](https://ci.appveyor.com/project/LOOT/metadata-validator)
+![CI](https://github.com/loot/metadata-validator/workflows/CI/badge.svg?branch=master&event=push)
 [![Travis Build Status](https://travis-ci.org/loot/metadata-validator.svg?branch=master)](https://travis-ci.org/loot/metadata-validator)
 
 This is a very simple validator for LOOT metadata files that tries to load a
@@ -24,5 +24,5 @@ metadata-validator ./masterlist.yaml
 
 ## Building From Source
 
-Refer to `appveyor.yml` and `.travis.yml` for the build processes on Windows and
+Refer to `.github/workflows/ci.yml` and `.travis.yml` for the build processes on Windows and
 Linux respectively.

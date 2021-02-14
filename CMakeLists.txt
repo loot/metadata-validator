@@ -119,20 +119,20 @@ install(FILES "${LIBLOOT_EXTRACTED_PATH}/${LIBLOOT_SHARED_LIBRARY}"
 # CPack
 ########################################
 
-IF (GIT_FOUND)
-    execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always --abbrev=7
-                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                  OUTPUT_VARIABLE GIT_DESCRIBE_STRING
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-    IF (DEFINED ENV{APPVEYOR_REPO_BRANCH})
-        set(GIT_DESCRIBE_STRING "${GIT_DESCRIBE_STRING}_$ENV{APPVEYOR_REPO_BRANCH}")
+IF (NOT DEFINED CPACK_PACKAGE_VERSION)
+    IF (GIT_FOUND)
+        execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long --always --abbrev=7
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                    OUTPUT_VARIABLE GIT_DESCRIBE_STRING
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
     ELSEIF (DEFINED ENV{TRAVIS_BRANCH})
-        set(GIT_DESCRIBE_STRING "${GIT_DESCRIBE_STRING}_$ENV{TRAVIS_BRANCH}")
-    ENDIF()
-ELSE()
-    SET (GIT_DESCRIBE_STRING "unknown-version")
-ENDIF ()
+        SET (GIT_DESCRIBE_STRING "${GIT_DESCRIBE_STRING}_$ENV{TRAVIS_BRANCH}")
+    ELSE ()
+        SET (GIT_DESCRIBE_STRING "unknown-version")
+    ENDIF ()
+
+    set(CPACK_PACKAGE_VERSION ${GIT_DESCRIBE_STRING})
+ENDIF()
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     set(CPACK_GENERATOR "7Z")
@@ -140,7 +140,6 @@ else()
     set(CPACK_GENERATOR "TXZ")
 endif()
 
-set(CPACK_PACKAGE_VERSION ${GIT_DESCRIBE_STRING})
 set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/package")
 
 include(CPack)
