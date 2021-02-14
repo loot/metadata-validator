@@ -31,6 +31,58 @@ jobs:
 
             The `metadata-validator.tar.xz` file contains a Linux binary.
 
+  linux:
+    runs-on: ubuntu-18.04
+    needs: create_release
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get descriptive version
+        id: get-version
+        shell: bash
+        run: |
+          GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
+          DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
+          SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
+          echo "::set-output name=version::$SAFE_DESC_REF"
+
+      - name: Install APT package dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libhttp-parser-dev \
+            libssh2-1-dev
+
+      - name: Run CMake
+        run: |
+          mkdir build
+          cd build
+          export CXX="g++-8" CC="gcc-8"
+          cmake .. -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          make all
+
+      - name: Build archive
+        id: build-archive
+        shell: bash
+        run: |
+          cd build
+          cpack
+          VERSION="${{ steps.get-version.outputs.version }}"
+          echo "::set-output name=filename::metadata-validator-${VERSION}-Linux.tar.xz"
+
+      - name: Upload Archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: build/package/${{ steps.build-archive.outputs.filename }}
+          asset_name: ${{ steps.build-archive.outputs.filename }}
+          asset_content_type: application/octet-stream
+
   windows:
     runs-on: windows-2016
     needs: create_release
