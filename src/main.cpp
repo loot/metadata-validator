@@ -49,13 +49,14 @@ int main(int argc, char **argv) {
   using std::endl;
 
   // Print help text if -h, --help or invalid args are given (including no args).
-  if (argc != 2 || (strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
+  if (argc < 2 || argc > 3 || (strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
     cout << endl
-      << "Usage: metadata-validator <arg>" << endl << endl
+      << "Usage: metadata-validator <metadata file path> [<prelude file path>]" << endl << endl
       << "Arguments:" << endl << endl
-      << "  " << "<file>" << "         " << "The metadata file to validate." << endl
-      << "  " << "-v, --version" << "  " << "Prints version information for this utility." << endl
-      << "  " << "-h, --help" << "     " << "Prints this help text." << endl << endl;
+      << "  " << "<metadata file path>" << " " << "The metadata file to validate." << endl
+      << "  " << "<prelude file path>" << "  " << "The prelude metadata file to substitute in before validation (optional)." << endl
+      << "  " << "-v, --version" << "        " << "Prints version information for this utility." << endl
+      << "  " << "-h, --help" << "           " << "Prints this help text." << endl << endl;
     return 1;
   }
 
@@ -71,11 +72,20 @@ int main(int argc, char **argv) {
   // Create a dummy game install.
   auto gamePath = mockGameInstall();
   try {
-    cout << endl << "Validating metadata file: " << argv[1] << endl << endl;
+    cout << endl << "Validating metadata file: " << argv[1] << endl;
+    if (argc == 3) {
+      cout << "Using prelude file: " << argv[2] << endl;
+    }
+    cout << endl;
 
     // Create a handle for any game at any path, it doesn't matter.
     auto handle = loot::CreateGameHandle(loot::GameType::tes4, gamePath.string(), gamePath.string());
-    handle->GetDatabase()->LoadLists(argv[1]);
+
+    if (argc == 2) {
+      handle->GetDatabase()->LoadLists(argv[1]);
+    } else if (argc == 3) {
+      handle->GetDatabase()->LoadLists(argv[1], "", argv[2]);
+    }
   } catch (std::exception& e) {
     cout << "ERROR: " << e.what() << endl << endl;
 
