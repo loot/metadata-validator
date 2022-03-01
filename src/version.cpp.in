@@ -25,7 +25,7 @@
 #include "version.h"
 
 namespace loot {
-std::string GetValidatorVersion() { return "0.17.0"; }
+std::string GetValidatorVersion() { return "0.18.0"; }
 
 std::string GetValidatorRevision() { return "@GIT_COMMIT_STRING@"; }
 }
