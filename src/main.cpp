@@ -43,7 +43,6 @@ fs::path mockGameInstall() {
 }
 
 int main(int argc, char** argv) {
-  using loot::validator::Version;
   using std::cout;
   using std::endl;
 
@@ -84,8 +83,8 @@ int main(int argc, char** argv) {
   if ((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "--version") == 0)) {
     cout << endl
          << "LOOT Metadata Validator" << endl
-         << "v" << Version::string() << ", build revision " << Version::revision
-         << endl
+         << "v" << loot::GetValidatorVersion() << ", build revision "
+         << loot::GetValidatorRevision() << endl
          << "Using libloot v" << loot::GetLiblootVersion()
          << ", build revision " << loot::GetLiblootRevision() << endl
          << endl;

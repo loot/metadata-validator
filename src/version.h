@@ -28,17 +28,9 @@
 #include <string>
 
 namespace loot {
-namespace validator {
-class Version {
-public:
-  static const unsigned int major;
-  static const unsigned int minor;
-  static const unsigned int patch;
-  static const std::string revision;
+std::string GetValidatorVersion();
 
-  static std::string string();
-};
-}
+std::string GetValidatorRevision();
 }
 
 #endif

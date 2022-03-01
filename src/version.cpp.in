@@ -25,15 +25,7 @@
 #include "version.h"
 
 namespace loot {
-namespace validator {
-const unsigned int Version::major = 0;
-const unsigned int Version::minor = 17;
-const unsigned int Version::patch = 0;
-const std::string Version::revision = "@GIT_COMMIT_STRING@";
+std::string GetValidatorVersion() { return "0.17.0"; }
 
-std::string Version::string() {
-  return std::to_string(major) + '.' + std::to_string(minor) + '.' +
-         std::to_string(patch);
-}
-}
+std::string GetValidatorRevision() { return "@GIT_COMMIT_STRING@"; }
 }
