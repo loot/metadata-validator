@@ -80,6 +80,7 @@ target_include_directories(metadata_validator PRIVATE
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(metadata_validator PRIVATE UNICODE _UNICODE)
+    target_compile_options(metadata_validator PRIVATE "/permissive-" "/W4")
 
     target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
