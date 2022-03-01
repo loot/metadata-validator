@@ -23,9 +23,9 @@
     */
 
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <filesystem>
 
 #include "loot/api.h"
 #include "version.h"
@@ -42,30 +42,54 @@ fs::path mockGameInstall() {
   return dataPath.parent_path();
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   using loot::LootVersion;
   using loot::validator::Version;
   using std::cout;
   using std::endl;
 
-  // Print help text if -h, --help or invalid args are given (including no args).
-  if (argc < 2 || argc > 3 || (strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
+  // Print help text if -h, --help or invalid args are given (including no
+  // args).
+  if (argc < 2 || argc > 3 || (strcmp(argv[1], "-h") == 0) ||
+      (strcmp(argv[1], "--help") == 0)) {
     cout << endl
-      << "Usage: metadata-validator <metadata file path> [<prelude file path>]" << endl << endl
-      << "Arguments:" << endl << endl
-      << "  " << "<metadata file path>" << " " << "The metadata file to validate." << endl
-      << "  " << "<prelude file path>" << "  " << "The prelude metadata file to substitute in before validation (optional)." << endl
-      << "  " << "-v, --version" << "        " << "Prints version information for this utility." << endl
-      << "  " << "-h, --help" << "           " << "Prints this help text." << endl << endl;
+         << "Usage: metadata-validator <metadata file path> [<prelude file "
+            "path>]"
+         << endl
+         << endl
+         << "Arguments:" << endl
+         << endl
+         << "  "
+         << "<metadata file path>"
+         << " "
+         << "The metadata file to validate." << endl
+         << "  "
+         << "<prelude file path>"
+         << "  "
+         << "The prelude metadata file to substitute in before validation "
+            "(optional)."
+         << endl
+         << "  "
+         << "-v, --version"
+         << "        "
+         << "Prints version information for this utility." << endl
+         << "  "
+         << "-h, --help"
+         << "           "
+         << "Prints this help text." << endl
+         << endl;
     return 1;
   }
 
   // Print version info if -v or --version are given.
   if ((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "--version") == 0)) {
-    cout << endl << "LOOT Metadata Validator" << endl
-      << "v" << Version::string() << ", build revision " << Version::revision << endl
-      << "Using libloot v" << LootVersion::GetVersionString() << ", build revision " << LootVersion::revision
-      << endl << endl;
+    cout << endl
+         << "LOOT Metadata Validator" << endl
+         << "v" << Version::string() << ", build revision " << Version::revision
+         << endl
+         << "Using libloot v" << LootVersion::GetVersionString()
+         << ", build revision " << LootVersion::revision << endl
+         << endl;
     return 0;
   }
 
@@ -79,7 +103,8 @@ int main(int argc, char **argv) {
     cout << endl;
 
     // Create a handle for any game at any path, it doesn't matter.
-    auto handle = loot::CreateGameHandle(loot::GameType::tes4, gamePath.string(), gamePath.string());
+    auto handle = loot::CreateGameHandle(
+        loot::GameType::tes4, gamePath.string(), gamePath.string());
 
     if (argc == 2) {
       handle->GetDatabase()->LoadLists(argv[1]);
