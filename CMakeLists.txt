@@ -74,8 +74,9 @@ set(VALIDATOR_SOURCE "${CMAKE_BINARY_DIR}/generated/version.cpp"
 add_executable       (metadata_validator ${VALIDATOR_SOURCE} ${VALIDATOR_HEADERS})
 add_dependencies     (metadata_validator libloot)
 
-target_include_directories(metadata_validator PRIVATE
-    "${CMAKE_SOURCE_DIR}/src"
+target_include_directories(metadata_validator PRIVATE "${CMAKE_SOURCE_DIR}/src")
+
+target_include_directories(metadata_validator SYSTEM PRIVATE
     ${LIBLOOT_INCLUDE_DIRS})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -92,6 +93,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
         PROPERTIES
             INSTALL_RPATH "${CMAKE_INSTALL_RPATH};."
             BUILD_WITH_INSTALL_RPATH ON)
+
+    target_compile_options(metadata_validator PRIVATE "-Wall" "-Wextra")
 endif()
 
 # Copy the API binary to the build directory.
