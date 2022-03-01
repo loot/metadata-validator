@@ -29,7 +29,7 @@ configure_file("${CMAKE_SOURCE_DIR}/src/version.cpp.in" "${CMAKE_BINARY_DIR}/gen
 include_directories("${CMAKE_BINARY_DIR}/generated")
 
 ##############################
-# LOOT API
+# libloot
 ##############################
 
 if (NOT DEFINED LIBLOOT_URL)
