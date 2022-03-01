@@ -43,7 +43,6 @@ fs::path mockGameInstall() {
 }
 
 int main(int argc, char** argv) {
-  using loot::LootVersion;
   using loot::validator::Version;
   using std::cout;
   using std::endl;
@@ -87,8 +86,8 @@ int main(int argc, char** argv) {
          << "LOOT Metadata Validator" << endl
          << "v" << Version::string() << ", build revision " << Version::revision
          << endl
-         << "Using libloot v" << LootVersion::GetVersionString()
-         << ", build revision " << LootVersion::revision << endl
+         << "Using libloot v" << loot::GetLiblootVersion()
+         << ", build revision " << loot::GetLiblootRevision() << endl
          << endl;
     return 0;
   }
@@ -107,9 +106,9 @@ int main(int argc, char** argv) {
         loot::GameType::tes4, gamePath.string(), gamePath.string());
 
     if (argc == 2) {
-      handle->GetDatabase()->LoadLists(argv[1]);
+      handle->GetDatabase().LoadLists(argv[1]);
     } else if (argc == 3) {
-      handle->GetDatabase()->LoadLists(argv[1], "", argv[2]);
+      handle->GetDatabase().LoadLists(argv[1], "", argv[2]);
     }
   } catch (const std::exception& e) {
     cout << "ERROR: " << e.what() << endl << endl;
