@@ -27,7 +27,7 @@ jobs:
           tag_name: ${{ steps.get-git-tag.outputs.name }}
           release_name: LOOT Metadata Validator v${{ steps.get-git-tag.outputs.name }}
           body: |
-            Windows users should download the file with the `7z` file extension. It requires Windows 7 or later and the [MSVC 2017 x86 redistributable](https://download.visualstudio.microsoft.com/download/pr/749aa419-f9e4-4578-a417-a43786af205e/d59197078cc425377be301faba7dd87a/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
+            Windows users should download the file with the `7z` file extension. It requires Windows 7 or later and the [MSVC 2019 x86 redistributable](https://aka.ms/vs/16/release/vc_redist.x86.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
 
             The `metadata-validator.tar.xz` file contains a Linux binary.
 
@@ -85,7 +85,7 @@ jobs:
           asset_content_type: application/octet-stream
 
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     needs: create_release
 
     steps:
@@ -106,7 +106,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G "Visual Studio 15 2017" -A Win32 -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          cmake .. -G "Visual Studio 16 2019" -A Win32 -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
           cmake --build . --config ${{ env.MSVC_CONFIG }}
 
       - name: Build archive
