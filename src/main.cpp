@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     } else if (argc == 3) {
       handle->GetDatabase()->LoadLists(argv[1], "", argv[2]);
     }
-  } catch (std::exception& e) {
+  } catch (const std::exception& e) {
     cout << "ERROR: " << e.what() << endl << endl;
 
     fs::remove_all(gamePath);
