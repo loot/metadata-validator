@@ -26,7 +26,7 @@ jobs:
           GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
           DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
           SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
-          echo "::set-output name=version::$SAFE_DESC_REF"
+          echo "version=$SAFE_DESC_REF" >> $GITHUB_OUTPUT
 
       - name: Install APT package dependencies
         run: |
@@ -51,7 +51,7 @@ jobs:
           cd build
           cpack
           VERSION="${{ steps.get-version.outputs.version }}"
-          echo "::set-output name=filename::metadata-validator-${VERSION}-Linux.tar.xz"
+          echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
 
       - name: Upload archive
         uses: actions/upload-artifact@v3
@@ -75,7 +75,7 @@ jobs:
           GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
           DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
           SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
-          echo "::set-output name=version::$SAFE_DESC_REF"
+          echo "version=$SAFE_DESC_REF" >> $GITHUB_OUTPUT
 
       - name: Run CMake
         run: |
@@ -91,7 +91,7 @@ jobs:
           cd build
           cpack -C ${{ env.MSVC_CONFIG }}
           VERSION="${{ steps.get-version.outputs.version }}"
-          echo "::set-output name=filename::metadata-validator-${VERSION}-win32.7z"
+          echo "filename=metadata-validator-${VERSION}-win32.7z" >> $GITHUB_OUTPUT
 
       - name: Upload archive
         uses: actions/upload-artifact@v3
