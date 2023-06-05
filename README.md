@@ -9,7 +9,9 @@ thrown.
 
 ## Downloads
 
-Releases are hosted on [GitHub](https://github.com/loot/metadata-validator/releases), and snapshot builds are available on [Artifactory](https://loot.jfrog.io/ui/repos/tree/General/metadata-validator). The snapshot build archives are named like so:
+Releases are hosted on [GitHub](https://github.com/loot/metadata-validator/releases).
+
+Snapshot builds are available as artifacts from [GitHub Actions runs](https://github.com/loot/metadata-validator/actions), though they are only kept for 90 days and can only be downloaded when logged into a GitHub account. The snapshot build archives are named like so:
 
 ```
 metadata-validator-<last tag>-<revisions since tag>-g<short revision ID>_<branch>-<platform>.7z
