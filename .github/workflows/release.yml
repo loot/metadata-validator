@@ -53,16 +53,23 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            g++-8 \
-            libhttp-parser-dev \
-            libssh2-1-dev
+            g++-10 \
+            libtbb-dev
+
+      - name: Get ICU
+        id: get-icu
+        run: |
+          wget https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-Ubuntu20.04-x64.tgz
+          tar -xf icu4c-71_1-Ubuntu20.04-x64.tgz
+
+          echo "root=${{ github.workspace }}/icu/usr/local" >> $GITHUB_OUTPUT
 
       - name: Run CMake
         run: |
           mkdir build
           cd build
-          export CXX="g++-8" CC="gcc-8"
-          cmake .. -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          export CXX="g++-10" CC="gcc-10"
+          cmake .. -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}" -DICU_ROOT="${{ steps.get-icu.outputs.root }}"
           make all
 
       - name: Build archive

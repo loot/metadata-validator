@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4)
-cmake_policy(SET CMP0015 NEW)
+if(POLICY CMP0135)
+    cmake_policy(SET CMP0135 NEW)
+endif()
 project(metadata-validator)
 include(ExternalProject)
 
@@ -30,24 +32,33 @@ configure_file("${CMAKE_SOURCE_DIR}/src/version.cpp.in"
     @ONLY)
 
 ##############################
-# libloot
+# External projects
 ##############################
+
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    find_package(ICU 71.1 EXACT REQUIRED COMPONENTS data uc)
+    find_package(TBB REQUIRED)
+endif()
 
 if(NOT DEFINED LIBLOOT_URL)
     if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         if(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
-            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.18.0/libloot-0.18.0-0-g632b85c_0.18.0-win32.7z")
+            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-win32.7z")
+            set(LIBLOOT_HASH "SHA256=b7ea3369e4eae60be38c3d7f7b9194e8d6284e78dc862d13f0644b990b44011a")
         else()
-            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.18.0/libloot-0.18.0-0-g632b85c_0.18.0-win64.7z")
+            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-win64.7z")
+            set(LIBLOOT_HASH "SHA256=7a1ed5a5b9ecec748f2dde43d73786f25b844874e116d86ddb603ede5933b5db")
         endif()
     else()
-        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.18.0/libloot-0.18.0-0-g632b85c_0.18.0-Linux.tar.xz")
+        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-Linux.tar.xz")
+        set(LIBLOOT_HASH "SHA256=2ce58a64380ef436ea5d01fa647ee6cfeb23f76b2468162bf099f4de07e31ea3")
     endif()
 endif()
 
 ExternalProject_Add(libloot
     PREFIX "external"
     URL ${LIBLOOT_URL}
+    URL_HASH ${LIBLOOT_HASH}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
@@ -85,7 +96,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
-    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_SHARED_LIBRARY} pthread http_parser ssh2 stdc++fs)
+    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_SHARED_LIBRARY} pthread stdc++fs ICU::data ICU::uc TBB::tbb)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
