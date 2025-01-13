@@ -36,7 +36,6 @@ jobs:
     needs: create_release
 
     env:
-      ICU_MAJOR_VERSION: 71
       LIBLOOT_VERSION: 0.24.5
 
     steps:
@@ -52,8 +51,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.LIBLOOT_INSTALL_PATH }}
-          # Key includes ICU major version because libloot links against it as a shared library.
-          key: ${{ runner.os }}-libloot-${{ env.LIBLOOT_VERSION }}-icu-${{ env.ICU_MAJOR_VERSION }}
+          key: ${{ runner.os }}-libloot-${{ env.LIBLOOT_VERSION }}
 
       - name: Get descriptive version
         id: get-version
@@ -70,16 +68,8 @@ jobs:
           sudo apt-get install -y --no-upgrade \
             cbindgen \
             libboost-dev \
+            libicu-dev \
             libtbb-dev
-
-      - name: Get ICU
-        id: get-icu
-        run: |
-          wget https://github.com/unicode-org/icu/releases/download/release-${ICU_MAJOR_VERSION}-1/icu4c-${ICU_MAJOR_VERSION}_1-Ubuntu20.04-x64.tgz
-          tar -xf icu4c-${ICU_MAJOR_VERSION}_1-Ubuntu20.04-x64.tgz
-          ICU_INSTALL_PATH="${{ github.workspace }}/icu/usr/local"
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ICU_INSTALL_PATH/lib" >> "$GITHUB_ENV"
-          echo "root=$ICU_INSTALL_PATH" >> $GITHUB_OUTPUT
 
       - name: Download and build libloot
         run: |
@@ -89,7 +79,7 @@ jobs:
           mkdir libloot-$LIBLOOT_VERSION/build
           cd libloot-$LIBLOOT_VERSION/build
 
-          cmake .. -DICU_ROOT="${{ steps.get-icu.outputs.root }}" -DLIBLOOT_BUILD_TESTS=OFF -DLIBLOOT_INSTALL_DOCS=OFF -DCMAKE_INSTALL_PREFIX="$LIBLOOT_INSTALL_PATH"
+          cmake .. -DLIBLOOT_BUILD_TESTS=OFF -DLIBLOOT_INSTALL_DOCS=OFF -DCMAKE_INSTALL_PREFIX="$LIBLOOT_INSTALL_PATH"
 
           cmake --build . --target loot --config Release
           cmake --install . --config Release
@@ -99,7 +89,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DICU_ROOT="${{ steps.get-icu.outputs.root }}" -DCMAKE_PREFIX_PATH="${{ env.LIBLOOT_INSTALL_PATH }}" -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          cmake .. -DCMAKE_PREFIX_PATH="${{ env.LIBLOOT_INSTALL_PATH }}" -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
           make all
 
       - name: Build archive
