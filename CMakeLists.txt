@@ -36,36 +36,41 @@ configure_file("${CMAKE_SOURCE_DIR}/src/version.cpp.in"
 ##############################
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    find_package(ICU 71.1 EXACT REQUIRED COMPONENTS data uc)
+    find_package(ICU REQUIRED COMPONENTS data uc)
     find_package(TBB REQUIRED)
+    find_package(libloot REQUIRED CONFIG)
+else()
+    find_package(libloot CONFIG)
 endif()
 
-if(NOT DEFINED LIBLOOT_URL)
-    if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(libloot_FOUND)
+    get_target_property(LIBLOOT_INCLUDE_DIRS libloot::loot INTERFACE_INCLUDE_DIRECTORIES)
+    set(LIBLOOT_SHARED_LIBRARY $<TARGET_LINKER_FILE:libloot::loot>)
+else()
+    if(NOT DEFINED LIBLOOT_URL)
         if(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
-            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-win32.7z")
-            set(LIBLOOT_HASH "SHA256=b7ea3369e4eae60be38c3d7f7b9194e8d6284e78dc862d13f0644b990b44011a")
+            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.24.5/libloot-0.24.5-win32.7z")
+            set(LIBLOOT_HASH "SHA256=26075411a557acc6f467ffb76a89a167a3853e5a8e21ac2bdfa3165026b5dd7f")
         else()
-            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-win64.7z")
-            set(LIBLOOT_HASH "SHA256=7a1ed5a5b9ecec748f2dde43d73786f25b844874e116d86ddb603ede5933b5db")
+            set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.24.5/libloot-0.24.5-win64.7z")
+            set(LIBLOOT_HASH "SHA256=b0c9599256e95eb0a0299cd2d9f9088e15e08b25949ad71dcc377c1298d5630c")
         endif()
     else()
-        set(LIBLOOT_URL "https://github.com/loot/libloot/releases/download/0.21.0/libloot-0.21.0-Linux.tar.xz")
-        set(LIBLOOT_HASH "SHA256=2ce58a64380ef436ea5d01fa647ee6cfeb23f76b2468162bf099f4de07e31ea3")
+        file(TO_CMAKE_PATH "${LIBLOOT_URL}" LIBLOOT_URL)
     endif()
-endif()
 
-ExternalProject_Add(libloot
-    PREFIX "external"
-    URL ${LIBLOOT_URL}
-    URL_HASH ${LIBLOOT_HASH}
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND "")
-ExternalProject_Get_Property(libloot SOURCE_DIR)
-set(LIBLOOT_INCLUDE_DIRS "${SOURCE_DIR}/include")
-set(LIBLOOT_STATIC_LIBRARY "${SOURCE_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIBRARY_SUFFIX}")
-set(LIBLOOT_SHARED_LIBRARY "${SOURCE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    ExternalProject_Add(libloot
+        PREFIX "external"
+        URL ${LIBLOOT_URL}
+        URL_HASH ${LIBLOOT_HASH}
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        INSTALL_COMMAND "")
+    ExternalProject_Get_Property(libloot SOURCE_DIR)
+    set(LIBLOOT_INCLUDE_DIRS "${SOURCE_DIR}/include")
+    set(LIBLOOT_STATIC_LIBRARY "${SOURCE_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}loot${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    set(LIBLOOT_SHARED_LIBRARY "${SOURCE_DIR}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}loot${CMAKE_SHARED_LIBRARY_SUFFIX}")
+endif()
 
 ##############################
 # General Settings
@@ -82,21 +87,26 @@ set(VALIDATOR_SOURCE "${CMAKE_BINARY_DIR}/generated/version.cpp"
 ##############################
 
 # Build validator.
-add_executable       (metadata_validator ${VALIDATOR_SOURCE} ${VALIDATOR_HEADERS})
-add_dependencies     (metadata_validator libloot)
+add_executable(metadata_validator ${VALIDATOR_SOURCE} ${VALIDATOR_HEADERS})
+
+if(libloot_FOUND)
+    target_link_libraries(metadata_validator PRIVATE libloot::loot)
+else()
+    add_dependencies(metadata_validator libloot)
+
+    target_include_directories(metadata_validator SYSTEM PRIVATE
+        ${LIBLOOT_INCLUDE_DIRS})
+
+    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_STATIC_LIBRARY})
+endif()
 
 target_include_directories(metadata_validator PRIVATE "${CMAKE_SOURCE_DIR}/src")
-
-target_include_directories(metadata_validator SYSTEM PRIVATE
-    ${LIBLOOT_INCLUDE_DIRS})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(metadata_validator PRIVATE UNICODE _UNICODE)
     target_compile_options(metadata_validator PRIVATE "/permissive-" "/W4")
-
-    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_STATIC_LIBRARY})
 else()
-    target_link_libraries(metadata_validator PRIVATE ${LIBLOOT_SHARED_LIBRARY} pthread stdc++fs ICU::data ICU::uc TBB::tbb)
+    target_link_libraries(metadata_validator PRIVATE pthread stdc++fs ICU::data ICU::uc TBB::tbb)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
