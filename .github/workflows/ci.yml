@@ -91,7 +91,7 @@ jobs:
           echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
 
       - name: Upload archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.build-archive.outputs.filename }}
           path: build/package/${{ steps.build-archive.outputs.filename }}
@@ -131,7 +131,7 @@ jobs:
           echo "filename=metadata-validator-${VERSION}-win32.7z" >> $GITHUB_OUTPUT
 
       - name: Upload archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.build-archive.outputs.filename }}
           path: build/package/${{ steps.build-archive.outputs.filename }}
