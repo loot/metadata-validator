@@ -105,9 +105,9 @@ int main(int argc, char** argv) {
         loot::GameType::tes4, gamePath.string(), gamePath.string());
 
     if (argc == 2) {
-      handle->GetDatabase().LoadLists(argv[1]);
+      handle->GetDatabase().LoadMasterlist(argv[1]);
     } else if (argc == 3) {
-      handle->GetDatabase().LoadLists(argv[1], "", argv[2]);
+      handle->GetDatabase().LoadMasterlistWithPrelude(argv[1], argv[2]);
     }
   } catch (const std::exception& e) {
     cout << "ERROR: " << e.what() << endl << endl;
