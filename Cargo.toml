@@ -1,0 +1,11 @@
+[package]
+name = "metadata-validator"
+version = "0.27.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+clap = { version = "4.5.37", features = ["derive"] }
+tempfile = "3.19.1"
+
+libloot = { git = "https://github.com/loot/libloot.git", branch = "master" }
