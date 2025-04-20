@@ -31,91 +31,17 @@ jobs:
 
             The `metadata-validator.tar.xz` file contains a Linux binary.
 
-  linux:
-    runs-on: ubuntu-24.04
-    needs: create_release
+  build:
+    strategy:
+      matrix:
+        target:
+          - runner-image: windows-2025
+            triple: x86_64-pc-windows-msvc
+          - runner-image: ubuntu-24.04
+            triple: x86_64-unknown-linux-gnu
 
-    env:
-      LIBLOOT_VERSION: 0.28.0
+    runs-on: ${{ matrix.target.runner-image }}
 
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set libloot install path
-        run: echo "LIBLOOT_INSTALL_PATH=${{ github.workspace }}/libloot-${{ env.LIBLOOT_VERSION }}-install" >> $GITHUB_ENV
-
-      - name: libloot cache
-        id: libloot-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.LIBLOOT_INSTALL_PATH }}
-          key: ${{ runner.os }}-libloot-${{ env.LIBLOOT_VERSION }}
-
-      - name: Get descriptive version
-        id: get-version
-        shell: bash
-        run: |
-          GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
-          DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
-          SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
-          echo "version=$SAFE_DESC_REF" >> $GITHUB_OUTPUT
-
-      - name: Install APT package dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-upgrade \
-            libboost-dev \
-            libicu-dev \
-            libtbb-dev
-
-      - name: Checkout libloot repository
-        uses: actions/checkout@v4
-        with:
-          repository: loot/libloot
-          ref: ${{ env.LIBLOOT_VERSION }}
-          path: libloot-${{ env.LIBLOOT_VERSION }}
-        if: steps.libloot-cache.outputs.cache-hit != 'true'
-
-      - name: Download and build libloot
-        run: |
-          LIBLOOT_BUILD_DIR="libloot-$LIBLOOT_VERSION/cpp/build"
-
-          cmake -DCMAKE_BUILD_TYPE=Release -DLIBLOOT_BUILD_TESTS=OFF -DLIBLOOT_INSTALL_DOCS=OFF -DCMAKE_INSTALL_PREFIX="$LIBLOOT_INSTALL_PATH" -B "$LIBLOOT_BUILD_DIR" -S "libloot-$LIBLOOT_VERSION/cpp"
-
-          cmake --build "$LIBLOOT_BUILD_DIR" --target loot --config Release
-          cmake --install "$LIBLOOT_BUILD_DIR" --config Release
-        if: steps.libloot-cache.outputs.cache-hit != 'true'
-
-      - name: Run CMake
-        run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.LIBLOOT_INSTALL_PATH }}" -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
-          make all
-
-      - name: Build archive
-        id: build-archive
-        shell: bash
-        run: |
-          cd build
-          cpack
-          VERSION="${{ steps.get-version.outputs.version }}"
-          echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
-
-      - name: Upload Archive
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: build/package/${{ steps.build-archive.outputs.filename }}
-          asset_name: ${{ steps.build-archive.outputs.filename }}
-          asset_content_type: application/octet-stream
-
-  windows:
-    runs-on: windows-2025
     needs: create_release
 
     steps:
@@ -123,30 +49,48 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Install the Rust target
+        run: rustup target add ${{ matrix.target.triple }}
+
+      - name: Run build
+        run: cargo build --release
+
       - name: Get descriptive version
         id: get-version
         shell: bash
         run: |
           GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
-          DESC_REF=${GIT_DESCRIBE}_${GITHUB_REF#refs/*/}
+          GIT_REF_SUFFIX=${GIT_REF#refs/*/}
+          DESC_REF=${GIT_DESCRIBE}_${GIT_REF_SUFFIX}
           SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
+          SAFE_GIT_REF_SUFFIX=${GIT_REF_SUFFIX//[\/<>\"|]/_}
           echo "version=$SAFE_DESC_REF" >> $GITHUB_OUTPUT
-
-      - name: Run CMake
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Visual Studio 17 2022" -A x64 -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
-          cmake --build . --config ${{ env.MSVC_CONFIG }}
+          echo "ref=$SAFE_GIT_REF_SUFFIX" >> $GITHUB_OUTPUT
 
       - name: Build archive
         id: build-archive
         shell: bash
         run: |
-          cd build
-          cpack -C ${{ env.MSVC_CONFIG }}
+          python scripts/archive.py . "${{ steps.get-version.outputs.ref }}" --triple ${{ matrix.target.triple }}
+
           VERSION="${{ steps.get-version.outputs.version }}"
-          echo "filename=metadata-validator-${VERSION}-win64.7z" >> $GITHUB_OUTPUT
+
+          if [[ "${{ runner.os }}" == "Windows" ]]
+          then
+            echo "filename=metadata-validator-${VERSION}-win64.7z" >> $GITHUB_OUTPUT
+          else
+            echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
+          fi
 
       - name: Upload Archive
         uses: actions/upload-release-asset@v1
@@ -154,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: build/package/${{ steps.build-archive.outputs.filename }}
+          asset_path: target/package/${{ steps.build-archive.outputs.filename }}
           asset_name: ${{ steps.build-archive.outputs.filename }}
           asset_content_type: application/x-7z-compressed
