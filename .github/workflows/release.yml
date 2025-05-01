@@ -36,7 +36,7 @@ jobs:
     needs: create_release
 
     env:
-      LIBLOOT_VERSION: 0.26.0
+      LIBLOOT_VERSION: 0.26.1
 
     steps:
       - uses: actions/checkout@v3
@@ -66,10 +66,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-upgrade \
-            cbindgen \
             libboost-dev \
             libicu-dev \
             libtbb-dev
+
+      # The version in apt is too old.
+      - name: Install cbindgen
+        run: |
+          wget https://github.com/mozilla/cbindgen/releases/download/0.28.0/cbindgen
+          BIN_PATH="$HOME/.local/bin/"
+          mkdir -p "$BIN_PATH"
+          mv cbindgen "$BIN_PATH"
+          chmod +x "$BIN_PATH/cbindgen"
+          echo "$BIN_PATH" >> "$GITHUB_PATH"
 
       - name: Download and build libloot
         run: |
