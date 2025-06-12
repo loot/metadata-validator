@@ -36,7 +36,7 @@ jobs:
     needs: create_release
 
     env:
-      LIBLOOT_VERSION: 0.26.1
+      LIBLOOT_VERSION: 0.27.0
 
     steps:
       - uses: actions/checkout@v3
