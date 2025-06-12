@@ -1,7 +1,7 @@
 LOOT Metadata Validator
 =======================
 
-![CI](https://github.com/loot/metadata-validator/workflows/CI/badge.svg?branch=master&event=push)
+![CI](https://github.com/loot/metadata-validator/actions/workflows/ci.yml/badge.svg?branch=master&event=push)
 
 This is a very simple validator for LOOT metadata files that tries to load a
 given metadata file using libloot, and prints the message for any exception
