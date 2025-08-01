@@ -142,7 +142,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G "Visual Studio 17 2022" -A Win32 -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          cmake .. -G "Visual Studio 17 2022" -A x64 -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
           cmake --build . --config ${{ env.MSVC_CONFIG }}
 
       - name: Build archive
@@ -152,7 +152,7 @@ jobs:
           cd build
           cpack -C ${{ env.MSVC_CONFIG }}
           VERSION="${{ steps.get-version.outputs.version }}"
-          echo "filename=metadata-validator-${VERSION}-win32.7z" >> $GITHUB_OUTPUT
+          echo "filename=metadata-validator-${VERSION}-win64.7z" >> $GITHUB_OUTPUT
 
       - name: Upload Archive
         uses: actions/upload-release-asset@v1
