@@ -36,7 +36,7 @@ jobs:
     needs: create_release
 
     env:
-      LIBLOOT_VERSION: 0.27.0
+      LIBLOOT_VERSION: 0.28.0
 
     steps:
       - uses: actions/checkout@v3
@@ -70,35 +70,29 @@ jobs:
             libicu-dev \
             libtbb-dev
 
-      # The version in apt is too old.
-      - name: Install cbindgen
-        run: |
-          wget https://github.com/mozilla/cbindgen/releases/download/0.28.0/cbindgen
-          BIN_PATH="$HOME/.local/bin/"
-          mkdir -p "$BIN_PATH"
-          mv cbindgen "$BIN_PATH"
-          chmod +x "$BIN_PATH/cbindgen"
-          echo "$BIN_PATH" >> "$GITHUB_PATH"
+      - name: Checkout libloot repository
+        uses: actions/checkout@v4
+        with:
+          repository: loot/libloot
+          ref: ${{ env.LIBLOOT_VERSION }}
+          path: libloot-${{ env.LIBLOOT_VERSION }}
+        if: steps.libloot-cache.outputs.cache-hit != 'true'
 
       - name: Download and build libloot
         run: |
-          wget https://github.com/loot/libloot/archive/$LIBLOOT_VERSION.tar.gz
-          tar -xf $LIBLOOT_VERSION.tar.gz
+          LIBLOOT_BUILD_DIR="libloot-$LIBLOOT_VERSION/cpp/build"
 
-          mkdir libloot-$LIBLOOT_VERSION/build
-          cd libloot-$LIBLOOT_VERSION/build
+          cmake -DCMAKE_BUILD_TYPE=Release -DLIBLOOT_BUILD_TESTS=OFF -DLIBLOOT_INSTALL_DOCS=OFF -DCMAKE_INSTALL_PREFIX="$LIBLOOT_INSTALL_PATH" -B "$LIBLOOT_BUILD_DIR" -S "libloot-$LIBLOOT_VERSION/cpp"
 
-          cmake .. -DLIBLOOT_BUILD_TESTS=OFF -DLIBLOOT_INSTALL_DOCS=OFF -DCMAKE_INSTALL_PREFIX="$LIBLOOT_INSTALL_PATH"
-
-          cmake --build . --target loot --config Release
-          cmake --install . --config Release
+          cmake --build "$LIBLOOT_BUILD_DIR" --target loot --config Release
+          cmake --install "$LIBLOOT_BUILD_DIR" --config Release
         if: steps.libloot-cache.outputs.cache-hit != 'true'
 
       - name: Run CMake
         run: |
           mkdir build
           cd build
-          cmake .. -DCMAKE_PREFIX_PATH="${{ env.LIBLOOT_INSTALL_PATH }}" -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.LIBLOOT_INSTALL_PATH }}" -DCPACK_PACKAGE_VERSION="${{ steps.get-version.outputs.version }}"
           make all
 
       - name: Build archive
