@@ -10,26 +10,17 @@ env:
 jobs:
   create_release:
     runs-on: ubuntu-24.04
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      git_tag: ${{ steps.get-git-tag.outputs.name }}
 
     steps:
-      - name: Get Git tag
-        id: get-git-tag
-        run: echo "name=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-
-      - id: create_release
-        uses: actions/create-release@v1
+      - name: Create a draft GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.get-git-tag.outputs.name }}
-          release_name: LOOT Metadata Validator v${{ steps.get-git-tag.outputs.name }}
-          body: |
-            Windows users should download the file with the `7z` file extension. It requires Windows 10 64-bit or later and the [MSVC 2022 x64 redistributable]https://aka.ms/vs/17/release/vc_redist.x64.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.
+        run: |
+          RELEASE_TAG="${{ github.ref_name }}"
+          RELEASE_TITLE="LOOT Metadata Validator v$RELEASE_TAG"
+          RELEASE_NOTES="$(printf "Windows users should download the file with the \`7z\` file extension. It requires Windows 10 64-bit or later and the [MSVC 2022 x64 redistributable]https://aka.ms/vs/17/release/vc_redist.x64.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.\n\nThe \`metadata-validator.tar.xz\` file contains a Linux binary.")"
 
-            The `metadata-validator.tar.xz` file contains a Linux binary.
+          gh release create --draft --title "$RELEASE_TITLE" --notes "$RELEASE_NOTES" --verify-tag --repo "${{ github.repository }}" "$RELEASE_TAG"
 
   build:
     strategy:
@@ -92,12 +83,7 @@ jobs:
             echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
           fi
 
-      - name: Upload Archive
-        uses: actions/upload-release-asset@v1
+      - name: Upload archive to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: target/package/${{ steps.build-archive.outputs.filename }}
-          asset_name: ${{ steps.build-archive.outputs.filename }}
-          asset_content_type: application/x-7z-compressed
+        run: gh release upload --repo "${{ github.repository }}" "${{ github.ref_name }}" target/package/${{ steps.build-archive.outputs.filename }}#${{ steps.build-archive.outputs.filename }}
