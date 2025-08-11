@@ -464,9 +464,9 @@ dependencies = [
 
 [[package]]
 name = "libloot"
-version = "0.28.0"
+version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9677f566ead1ea25d2e350b5a4b37d9181d85e2804f2425086038b0b4cee0177"
+checksum = "5f9590655ef282c71dd3bb99a761d407ea93a410412609061f4eec88c253b125"
 dependencies = [
  "crc32fast",
  "esplugin",
@@ -526,7 +526,7 @@ checksum = "32a282da65faaf38286cf3be983213fcf1d2e2a58700e808f83f4ea9a4804bc0"
 
 [[package]]
 name = "metadata-validator"
-version = "0.28.0"
+version = "0.28.1"
 dependencies = [
  "anyhow",
  "clap",
