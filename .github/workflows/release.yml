@@ -54,7 +54,7 @@ jobs:
         run: rustup target add ${{ matrix.target.triple }}
 
       - name: Run build
-        run: cargo build --release
+        run: cargo build --release --target ${{ matrix.target.triple }}
 
       - name: Get descriptive version
         id: get-version
