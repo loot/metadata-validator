@@ -18,7 +18,7 @@ jobs:
         run: |
           RELEASE_TAG="${{ github.ref_name }}"
           RELEASE_TITLE="LOOT Metadata Validator v$RELEASE_TAG"
-          RELEASE_NOTES="$(printf "Windows users should download the file with the \`7z\` file extension. It requires Windows 10 64-bit or later and the [MSVC 2022 x64 redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.\n\nThe \`metadata-validator.tar.xz\` file contains a Linux binary.")"
+          RELEASE_NOTES="$(printf "Windows users should download the file with the \`7z\` file extension. It requires Windows 10 64-bit or later and the [MSVC 2022 x64 redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe), and [7-Zip](http://www.7-zip.org/) to extract the archive.\n\nThe \`metadata-validator-*-Linux.tar.xz\` file contains a Linux binary.")"
 
           gh release create --draft --title "$RELEASE_TITLE" --notes "$RELEASE_NOTES" --verify-tag --repo "${{ github.repository }}" "$RELEASE_TAG"
 
