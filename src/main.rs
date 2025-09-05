@@ -53,7 +53,7 @@ fn load_metadata(cli: &Cli) -> Result<(), anyhow::Error> {
     let (_tmp_dir, game_path) = create_mock_game_install()?;
 
     // The choice of game type doesn't matter.
-    let game = libloot::Game::new(libloot::GameType::Oblivion, &game_path)?;
+    let game = libloot::Game::with_local_path(libloot::GameType::Oblivion, &game_path, &game_path)?;
 
     let database = game.database();
     let mut database = database.write().map_err(|_| DatabaseLockPoisonError)?;
