@@ -58,7 +58,7 @@ def create_archive(root_path, triple, temp_path, destination_path):
 
     os.makedirs(temp_path)
 
-    executable_name = 'metadata-validator.exe' if os.name == 'nt' else 'metadata-validator'
+    executable_name = 'metadata_validator.exe' if os.name == 'nt' else 'metadata_validator'
 
     prepare_archive(root_path, triple, executable_name, temp_path)
 
