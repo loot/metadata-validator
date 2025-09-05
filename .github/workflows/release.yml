@@ -60,27 +60,21 @@ jobs:
         id: get-version
         shell: bash
         run: |
-          GIT_DESCRIBE=$(git describe --tags --long --abbrev=7)
-          GIT_REF_SUFFIX=${GIT_REF#refs/*/}
-          DESC_REF=${GIT_DESCRIBE}_${GIT_REF_SUFFIX}
-          SAFE_DESC_REF=${DESC_REF//[\/<>\"|]/_}
-          SAFE_GIT_REF_SUFFIX=${GIT_REF_SUFFIX//[\/<>\"|]/_}
-          echo "version=$SAFE_DESC_REF" >> $GITHUB_OUTPUT
-          echo "ref=$SAFE_GIT_REF_SUFFIX" >> $GITHUB_OUTPUT
+          GIT_REF_NAME="${{ github.ref_name }}"
+          SAFE_GIT_REF_NAME="${GIT_REF_NAME//[\/<>\"|]/_}"
+          echo "version=$SAFE_GIT_REF_NAME" >> $GITHUB_OUTPUT
 
       - name: Build archive
         id: build-archive
         shell: bash
         run: |
-          python scripts/archive.py . "${{ steps.get-version.outputs.ref }}" --triple ${{ matrix.target.triple }}
-
-          VERSION="${{ steps.get-version.outputs.version }}"
+          python scripts/archive.py --root-path . --version "${{ steps.get-version.outputs.version }}" --triple "${{ matrix.target.triple }}"
 
           if [[ "${{ runner.os }}" == "Windows" ]]
           then
-            echo "filename=metadata-validator-${VERSION}-win64.7z" >> $GITHUB_OUTPUT
+            echo "filename=metadata-validator-${{ steps.get-version.outputs.version }}-win64.7z" >> $GITHUB_OUTPUT
           else
-            echo "filename=metadata-validator-${VERSION}-Linux.tar.xz" >> $GITHUB_OUTPUT
+            echo "filename=metadata-validator-${{ steps.get-version.outputs.version }}-Linux.tar.xz" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload archive to GitHub Release

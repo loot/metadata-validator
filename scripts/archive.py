@@ -9,16 +9,6 @@ import subprocess
 
 INVALID_FILENAME_CHARACTERS = re.compile('[/<>"|]')
 
-def get_git_description(given_branch):
-    result = subprocess.run(
-        ['git', 'describe', '--tags', '--long', '--abbrev=7'],
-        capture_output=True,
-        text=True,
-        check=True
-    )
-
-    return result.stdout[:-1] + '_' + given_branch
-
 def get_archive_name_suffix(triple):
     if os.name == 'nt':
         # Assume 64-bit Windows if no triple is given, it's not worth checking.
@@ -80,18 +70,18 @@ def create_archive(root_path, triple, temp_path, destination_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Create an archive artifact')
-    parser.add_argument('root-path', nargs=1)
-    parser.add_argument('given-branch', nargs=1)
+    parser.add_argument('-r', '--root-path', required=True)
+    parser.add_argument('-v', '--version', required=True)
     parser.add_argument('-t', '--triple')
 
     arguments = vars(parser.parse_args())
 
-    root_path = arguments['root-path'][0]
+    root_path = arguments['root_path']
+    version = replace_invalid_filename_characters(arguments['version'])
     triple = arguments['triple']
 
-    git_description = get_git_description(arguments['given-branch'][0])
     file_extension = '.7z' if os.name == 'nt' else '.tar.xz'
-    filename = f'metadata-validator-{replace_invalid_filename_characters(git_description)}-{get_archive_name_suffix(triple)}'
+    filename = f'metadata-validator-{version}-{get_archive_name_suffix(triple)}'
 
     create_archive(
         root_path,
