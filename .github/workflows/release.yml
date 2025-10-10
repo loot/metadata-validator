@@ -11,6 +11,9 @@ jobs:
   create_release:
     runs-on: ubuntu-24.04
 
+    permissions:
+      contents: write
+
     steps:
       - name: Create a draft GitHub Release
         env:
@@ -34,6 +37,9 @@ jobs:
     runs-on: ${{ matrix.target.runner-image }}
 
     needs: create_release
+
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
