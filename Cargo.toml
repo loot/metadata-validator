@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1"
 clap = { version = "4.0.20", features = ["derive"] }
-libloot = "0.28.1"
+libloot = "0.28.2"
 tempfile = "3"
 
 [[bin]]
