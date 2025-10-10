@@ -20,7 +20,7 @@ metadata-validator-<last tag>-<revisions since tag>-g<short revision ID>_<branch
 ## Usage
 
 ```
-metadata-validator ./masterlist.yaml
+metadata_validator ./masterlist.yaml
 ```
 
 ## Building From Source
