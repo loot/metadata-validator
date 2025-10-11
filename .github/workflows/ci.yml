@@ -8,6 +8,16 @@ on:
   pull_request:
 
 jobs:
+  rustfmt:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check formatting
+        run: |
+          cargo fmt -- --version
+          cargo fmt --all -- --check
+
   cargo-vet:
     runs-on: ubuntu-24.04
 
