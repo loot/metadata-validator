@@ -1,6 +1,6 @@
 use std::{path::PathBuf, sync::LazyLock};
 
-use clap::{Parser, command};
+use clap::Parser;
 use tempfile::TempDir;
 
 static VERSION_STRING: LazyLock<String> = LazyLock::new(version);
