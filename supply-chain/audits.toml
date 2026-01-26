@@ -1,17 +1,37 @@
 
 # cargo-vet audits file
 
-[[audits.libloot]]
-who = "Oliver Hamlet <git@ortham.net>"
+[audits]
+
+[[trusted.esplugin]]
 criteria = "safe-to-deploy"
-version = "0.28.2"
-notes = "This is a first-party crate published using Trusted Publishing, but I can't mark it as trusted by cargo-vet because it doesn't support Trusted Publishing and just sees that the publisher is unknown."
+trusted-publisher = "github:Ortham/esplugin"
+start = "2025-09-29"
+end = "2027-01-26"
 
 [[trusted.libc]]
 criteria = "safe-to-deploy"
 user-id = 55123 # rust-lang-owner
 start = "2024-08-15"
 end = "2026-09-28"
+
+[[trusted.libloadorder]]
+criteria = "safe-to-deploy"
+trusted-publisher = "github:Ortham/libloadorder"
+start = "2025-08-01"
+end = "2027-01-26"
+
+[[trusted.libloot]]
+criteria = "safe-to-deploy"
+trusted-publisher = "github:loot/libloot"
+start = "2025-08-11"
+end = "2027-01-26"
+
+[[trusted.loot-condition-interpreter]]
+criteria = "safe-to-deploy"
+trusted-publisher = "github:loot/loot-condition-interpreter"
+start = "2025-09-29"
+end = "2027-01-26"
 
 [[trusted.windows-link]]
 criteria = "safe-to-deploy"
