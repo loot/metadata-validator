@@ -236,7 +236,7 @@ dependencies = [
  "libc",
  "option-ext",
  "redox_users",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -409,14 +409,14 @@ dependencies = [
  "rust-ini",
  "unicase",
  "windows-result",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
 name = "libloot"
-version = "0.28.2"
+version = "0.28.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48f6942c3c629072e6d2fdb95e0f36fabd8795ee9dbc3262d5d8a562abbe4e78"
+checksum = "7ee174a4888ff606c296d99bf6c850d5e72523e130a56a03ec3c5d1de87eb302"
 dependencies = [
  "crc32fast",
  "esplugin",
@@ -782,7 +782,7 @@ dependencies = [
  "getrandom 0.3.3",
  "once_cell",
  "rustix",
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
