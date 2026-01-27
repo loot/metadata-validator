@@ -249,12 +249,6 @@ This crate contains no `unsafe` code and no unnecessary use of the standard
 library.
 """
 
-[[audits.esplugin.audits.proc-macro2]]
-who = "Oliver Hamlet <git@ortham.net>"
-criteria = "safe-to-deploy"
-delta = "1.0.94 -> 1.0.95"
-notes = "The only changes were to reflect changes in semver-exempt APIs to support nightly Rust changes."
-
 [[audits.google.audits.autocfg]]
 who = "Manish Goregaokar <manishearth@google.com>"
 criteria = "safe-to-deploy"
@@ -915,14 +909,7 @@ who = "Ameer Ghani <inahga@divviup.org>"
 criteria = "safe-to-deploy"
 version = "1.12.1"
 
-[[audits.libloadorder.audits.keyvalues-parser]]
-who = "Oliver Hamlet <git@ortham.net>"
-criteria = "safe-to-deploy"
-delta = "0.2.0 -> 0.2.1"
-
-[audits.libloot.audits]
-
-[audits.loot-condition-interpreter.audits]
+[audits.loot.audits]
 
 [[audits.mozilla.wildcard-audits.encoding_rs]]
 who = "Henri Sivonen <hsivonen@hsivonen.fi>"
@@ -1072,3 +1059,16 @@ who = "Nika Layzell <nika@thelayzells.com>"
 criteria = "safe-to-deploy"
 delta = "0.2.1 -> 0.2.2"
 aggregated-from = "https://raw.githubusercontent.com/mozilla/cargo-vet/main/supply-chain/audits.toml"
+
+[[audits.ortham.audits.keyvalues-parser]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "0.2.0 -> 0.2.1"
+aggregated-from = "https://raw.githubusercontent.com/Ortham/libloadorder/refs/heads/master/supply-chain/audits.toml"
+
+[[audits.ortham.audits.proc-macro2]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "1.0.94 -> 1.0.95"
+notes = "The only changes were to reflect changes in semver-exempt APIs to support nightly Rust changes."
+aggregated-from = "https://raw.githubusercontent.com/Ortham/esplugin/refs/heads/master/supply-chain/audits.toml"
