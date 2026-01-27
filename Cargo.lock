@@ -204,21 +204,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43da5946c66ffcc7745f48db692ffbb10a83bfe0afd96235c5c2a4fb23994929"
 
 [[package]]
-name = "dataview"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50eb3a329e19d78c3a3dfa4ec5a51ecb84fa3a20c06edad04be25356018218f9"
-dependencies = [
- "derive_pod",
-]
-
-[[package]]
-name = "derive_pod"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2ea6706d74fca54e15f1d40b5cf7fe7f764aaec61352a9fcec58fe27e042fc8"
-
-[[package]]
 name = "dirs"
 version = "6.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -456,14 +441,13 @@ checksum = "13dc2df351e3202783a1fe0d44375f7295ffb4049267b0f3018346dc122a1d94"
 
 [[package]]
 name = "loot-condition-interpreter"
-version = "5.3.3"
+version = "5.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "092c6bc62415f8f8963d72444ca50bf93c6d5fc137bff8491e267afe63a978ba"
+checksum = "25b56d48ce8c6249efb16d2bf91a3c959dc57eeeff906116547c0af8c86bb953"
 dependencies = [
  "crc32fast",
  "esplugin",
  "nom",
- "pelite",
  "regex",
  "unicase",
 ]
@@ -483,12 +467,6 @@ dependencies = [
  "libloot",
  "tempfile",
 ]
-
-[[package]]
-name = "no-std-compat"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b93853da6d84c2e3c7d730d6473e8817692dd89be387eb01b94d7f108ecb5b8c"
 
 [[package]]
 name = "nom"
@@ -544,25 +522,6 @@ dependencies = [
  "dlv-list",
  "hashbrown 0.14.5",
 ]
-
-[[package]]
-name = "pelite"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88dccf4bd32294364aeb7bd55d749604450e9db54605887551f21baea7617685"
-dependencies = [
- "dataview",
- "libc",
- "no-std-compat",
- "pelite-macros",
- "winapi",
-]
-
-[[package]]
-name = "pelite-macros"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a7cf3f8ecebb0f4895f4892a8be0a0dc81b498f9d56735cb769dc31bf00815b"
 
 [[package]]
 name = "pest"
@@ -858,28 +817,6 @@ checksum = "9683f9a5a998d873c0d21fcbe3c083009670149a8fab228644b8bd36b2c48cb3"
 dependencies = [
  "wit-bindgen-rt",
 ]
-
-[[package]]
-name = "winapi"
-version = "0.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419"
-dependencies = [
- "winapi-i686-pc-windows-gnu",
- "winapi-x86_64-pc-windows-gnu",
-]
-
-[[package]]
-name = "winapi-i686-pc-windows-gnu"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
-
-[[package]]
-name = "winapi-x86_64-pc-windows-gnu"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "windows-link"
