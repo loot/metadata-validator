@@ -1,7 +1,15 @@
 
 # cargo-vet audits file
 
-[audits]
+[[audits.clap]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "4.5.40 -> 4.5.47"
+
+[[audits.clap_builder]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "4.5.40 -> 4.5.47"
 
 [[trusted.esplugin]]
 criteria = "safe-to-deploy"
