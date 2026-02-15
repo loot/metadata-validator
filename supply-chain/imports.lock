@@ -25,13 +25,13 @@ when = "2025-09-29"
 trusted-publisher = "github:Ortham/libloadorder"
 
 [[publisher.libloot]]
-version = "0.28.4"
-when = "2025-12-31"
+version = "0.29.0"
+when = "2026-02-04"
 trusted-publisher = "github:loot/libloot"
 
 [[publisher.loot-condition-interpreter]]
-version = "5.4.0"
-when = "2026-01-01"
+version = "6.0.0"
+when = "2026-01-21"
 trusted-publisher = "github:loot/loot-condition-interpreter"
 
 [[publisher.windows-link]]
@@ -139,6 +139,11 @@ notes = """
 Only a minor amount of `unsafe` code in this crate related to global per-process
 initialization which looks correct to me.
 """
+
+[[audits.bytecode-alliance.audits.hashbrown]]
+who = "Chris Fallin <chris@cfallin.org>"
+criteria = "safe-to-deploy"
+delta = "0.14.5 -> 0.15.2"
 
 [[audits.bytecode-alliance.audits.heck]]
 who = "Alex Crichton <alex@alexcrichton.com>"
@@ -839,7 +844,11 @@ who = "Ameer Ghani <inahga@divviup.org>"
 criteria = "safe-to-deploy"
 version = "1.12.1"
 
-[audits.loot.audits]
+[[audits.loot.audits.regress]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "0.10.4 -> 0.10.5"
+aggregated-from = "https://raw.githubusercontent.com/loot/libloot/refs/heads/master/supply-chain/audits.toml"
 
 [[audits.mozilla.wildcard-audits.encoding_rs]]
 who = "Henri Sivonen <hsivonen@hsivonen.fi>"
@@ -929,6 +938,24 @@ who = "Chris Martin <cmartin@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "2.1.0 -> 2.1.1"
 notes = "Fairly trivial changes, no chance of security regression."
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.foldhash]]
+who = "Erich Gubler <erichdongubler@gmail.com>"
+criteria = "safe-to-deploy"
+delta = "0.1.5 -> 0.2.0"
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.hashbrown]]
+who = "Erich Gubler <erichdongubler@gmail.com>"
+criteria = "safe-to-deploy"
+delta = "0.15.2 -> 0.15.5"
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.hashbrown]]
+who = "Erich Gubler <erichdongubler@gmail.com>"
+criteria = "safe-to-deploy"
+delta = "0.15.5 -> 0.16.0"
 aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.indexmap]]
