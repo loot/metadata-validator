@@ -16,6 +16,11 @@ who = "Oliver Hamlet <git@ortham.net>"
 criteria = "safe-to-deploy"
 delta = "1.0.98 -> 1.0.101"
 
+[[audits.anyhow]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "1.0.101 -> 1.0.102"
+
 [[audits.clap]]
 who = "Oliver Hamlet <git@ortham.net>"
 criteria = "safe-to-deploy"
