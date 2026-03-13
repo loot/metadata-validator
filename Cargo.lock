@@ -416,9 +416,9 @@ dependencies = [
 
 [[package]]
 name = "libloot"
-version = "0.29.0"
+version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57e9bfb25cafa8039778d5a9280cd10dbfa0ceb9b1d125f5b6762192e8000510"
+checksum = "82ab2918883dfbf5344e01a99ea6ee74f9093831cc476ca92840587adc1f939a"
 dependencies = [
  "crc32fast",
  "esplugin",

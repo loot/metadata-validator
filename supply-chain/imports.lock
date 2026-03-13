@@ -25,8 +25,8 @@ when = "2025-09-29"
 trusted-publisher = "github:Ortham/libloadorder"
 
 [[publisher.libloot]]
-version = "0.29.0"
-when = "2026-02-04"
+version = "0.29.1"
+when = "2026-03-13"
 trusted-publisher = "github:loot/libloot"
 
 [[publisher.loot-condition-interpreter]]
