@@ -1089,6 +1089,12 @@ criteria = "safe-to-deploy"
 delta = "4.5.58 -> 4.6.0"
 aggregated-from = "https://raw.githubusercontent.com/Ortham/svg_to_ico/refs/heads/master/supply-chain/audits.toml"
 
+[[audits.ortham.audits.clap]]
+who = "Oliver Hamlet <git@ortham.net>"
+criteria = "safe-to-deploy"
+delta = "4.6.0 -> 4.6.1"
+aggregated-from = "https://raw.githubusercontent.com/Ortham/svg_to_ico/refs/heads/master/supply-chain/audits.toml"
+
 [[audits.ortham.audits.clap_builder]]
 who = "Oliver Hamlet <git@ortham.net>"
 criteria = "safe-to-deploy"
